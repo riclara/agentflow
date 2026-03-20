@@ -1,0 +1,112 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://unpkg.com/agentflow/schema.json",
+  "title": "agentflow config",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "version",
+    "tools",
+    "models",
+    "workflow",
+    "project",
+    "managedFiles"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "const": "https://unpkg.com/agentflow/schema.json"
+    },
+    "version": {
+      "type": "string"
+    },
+    "tools": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "claude-code",
+          "codex",
+          "opencode"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "models": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "planner",
+        "implementer",
+        "tester",
+        "documenter"
+      ],
+      "properties": {
+        "planner": {
+          "type": "string"
+        },
+        "implementer": {
+          "type": "string"
+        },
+        "tester": {
+          "type": "string"
+        },
+        "documenter": {
+          "type": "string"
+        }
+      }
+    },
+    "workflow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "maxReviewIterations",
+        "planGranularity",
+        "testerExecutes",
+        "testerAutoLoop"
+      ],
+      "properties": {
+        "maxReviewIterations": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "planGranularity": {
+          "type": "string"
+        },
+        "testerExecutes": {
+          "type": "boolean"
+        },
+        "testerAutoLoop": {
+          "type": "boolean"
+        }
+      }
+    },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "language",
+        "framework",
+        "testRunner"
+      ],
+      "properties": {
+        "language": {
+          "type": "string"
+        },
+        "framework": {
+          "type": "string"
+        },
+        "testRunner": {
+          "type": "string"
+        }
+      }
+    },
+    "managedFiles": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  }
+}
