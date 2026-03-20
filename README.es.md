@@ -20,7 +20,7 @@ Codex. OpenCode recibe las definiciones de agentes para ejecución manual.
 Instala `agentflow` globalmente una vez:
 
 ```bash
-npm install -g agentflow
+npm install -g @riclara/agentflow
 ```
 
 Luego, dentro de cada proyecto donde quieras usar el flujo:

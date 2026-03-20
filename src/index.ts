@@ -7,7 +7,7 @@ import { runEjectCommand } from "./commands/eject.js";
 import { runInitCommand } from "./commands/init.js";
 import { runStatusCommand } from "./commands/status.js";
 import { runUpdateCommand } from "./commands/update.js";
-import { AGENTFLOW_VERSION } from "./core/schema.js";
+import { AGENTFLOW_VERSION, NPM_PACKAGE_NAME } from "./core/schema.js";
 import * as logger from "./utils/logger.js";
 import { checkForUpdate } from "./utils/version-check.js";
 
@@ -84,7 +84,7 @@ try {
   const latest = await updateCheck;
   if (latest) {
     logger.info(
-      `agentflow v${latest} available (current: v${AGENTFLOW_VERSION})\n  Run: npm update -g agentflow && agentflow update`,
+      `agentflow v${latest} available (current: v${AGENTFLOW_VERSION})\n  Run: npm update -g ${NPM_PACKAGE_NAME} && agentflow update`,
     );
   }
 } catch (caughtError) {

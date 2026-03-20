@@ -3,7 +3,8 @@ import path from "node:path";
 import { exists, readJson, writeJson } from "../utils/fs.js";
 
 export const AGENTFLOW_VERSION = "1.0.0";
-export const AGENTFLOW_SCHEMA_URL = "https://unpkg.com/agentflow/schema.json";
+export const NPM_PACKAGE_NAME = "@riclara/agentflow";
+export const AGENTFLOW_SCHEMA_URL = "https://unpkg.com/@riclara/agentflow/schema.json";
 export const CONFIG_FILE = ".agentflow.json";
 
 export const TOOL_IDS = ["claude-code", "codex", "opencode"] as const;

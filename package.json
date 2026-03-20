@@ -1,10 +1,13 @@
 {
-  "name": "agentflow",
+  "name": "@riclara/agentflow",
   "version": "1.0.0",
   "description": "Configure a multi-agent development workflow across Claude Code, Codex, Cowork, and OpenCode.",
   "type": "module",
   "bin": {
     "agentflow": "dist/index.js"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "files": [
     "dist",

@@ -1,4 +1,6 @@
-const NPM_LATEST_URL = "https://registry.npmjs.org/agentflow/latest";
+import { NPM_PACKAGE_NAME } from "../core/schema.js";
+
+const NPM_LATEST_URL = `https://registry.npmjs.org/${encodeURIComponent(NPM_PACKAGE_NAME)}/latest`;
 const VERSION_TIMEOUT_MS = 3_000;
 
 export async function checkForUpdate(currentVersion: string): Promise<string | null> {

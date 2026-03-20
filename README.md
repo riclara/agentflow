@@ -20,7 +20,7 @@ Codex. OpenCode gets the agent definitions for manual execution.
 Install `agentflow` globally once:
 
 ```bash
-npm install -g agentflow
+npm install -g @riclara/agentflow
 ```
 
 Then, inside each project where you want the workflow:
