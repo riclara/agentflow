@@ -1,5 +1,7 @@
 # agentflow
 
+Language: English | [Español](README.es.md)
+
 `agentflow` is a Node.js CLI that configures a multi-agent development workflow
 for Claude Code, Cowork, Codex CLI, Codex App, and OpenCode.
 
