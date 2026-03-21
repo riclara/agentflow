@@ -2,7 +2,7 @@
   "required_status_checks": {
     "strict": true,
     "contexts": [
-      "CI / verify"
+      "CI / verify (pull_request)"
     ]
   },
   "enforce_admins": true,
