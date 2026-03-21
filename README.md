@@ -15,6 +15,8 @@ It generates four specialized agents:
 The orchestration logic lives in the generated `agentflow` skill for Claude and
 Codex. OpenCode gets the agent definitions for manual execution.
 
+Background article: [Multi-Agent AI Development Pipeline](https://ricardolara.dev/blog/multi-agent-ai-development-pipeline/)
+
 ## Install the CLI
 
 Install `agentflow` globally once:
