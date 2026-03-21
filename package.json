@@ -3,6 +3,14 @@
   "version": "1.0.1",
   "description": "Configure a multi-agent development workflow across Claude Code, Codex, Cowork, and OpenCode.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/riclara/agentflow.git"
+  },
+  "homepage": "https://github.com/riclara/agentflow#readme",
+  "bugs": {
+    "url": "https://github.com/riclara/agentflow/issues"
+  },
   "type": "module",
   "bin": {
     "agentflow": "dist/index.js"

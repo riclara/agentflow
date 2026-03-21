@@ -304,3 +304,8 @@ That gives you:
 - a health report before changing anything
 - migration of managed files if they are stale or outdated
 - a final confirmation that the project is healthy
+
+## Repository Automation
+
+For CI, npm publishing, and branch protection setup, see
+[`docs/repository-setup.md`](docs/repository-setup.md).

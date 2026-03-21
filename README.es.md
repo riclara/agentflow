@@ -306,3 +306,8 @@ Eso te da:
 - un reporte de salud antes de cambiar nada
 - migración de archivos gestionados si están `stale` o desactualizados
 - una confirmación final de que el proyecto está sano
+
+## Automatización del repositorio
+
+Para el setup de CI, publicación en npm y protección de rama, revisa
+[`docs/repository-setup.md`](docs/repository-setup.md).
