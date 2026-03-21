@@ -82,6 +82,8 @@ Workflow requirements:
 - `id-token: write` permission
 - Node.js `24.x`
 - npm CLI `11.5.1` or later
+- workflows opt into `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true` until all
+  upstream JavaScript actions fully stop emitting the Node 20 deprecation warning
 
 Manual recovery flow:
 
