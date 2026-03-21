@@ -43,7 +43,8 @@ It executes:
 
 ## Release workflow
 
-`.github/workflows/publish.yml` runs on every push to `main`.
+`.github/workflows/publish.yml` runs on every push to `main` and also supports
+manual recovery via `workflow_dispatch`.
 
 It:
 
@@ -52,6 +53,8 @@ It:
 - creates a GitHub release and tag when the release PR is merged
 - rebuilds, reruns checks, and publishes to npm in the same workflow when a
   new release is created
+- can manually publish an existing release/tag if the publish step failed after
+  the release was already created
 
 No `NPM_TOKEN` repository secret is required.
 
@@ -80,6 +83,13 @@ Workflow requirements:
 - Node.js `24.x`
 - npm CLI `11.5.1` or later
 
+Manual recovery flow:
+
+1. Open the `Release` workflow in GitHub Actions.
+2. Click `Run workflow`.
+3. Set `ref` to the existing release tag, for example `agentflow-v1.0.2`.
+4. Run the workflow to retry only the publish path against that tag.
+
 Package metadata requirements:
 
 - `name` stays `@riclara/agentflow`
@@ -105,5 +115,5 @@ Versioning rules:
 1. Merge conventional commits into `main`.
 2. Let `release-please` open or update the release PR automatically.
 3. Review and merge the release PR once `CI / verify` passes.
-4. Let the same workflow create the GitHub release, tag `v<version>`, and
-   publish to npm automatically.
+4. Let the same workflow create the GitHub release, create the release tag,
+   and publish to npm automatically.
