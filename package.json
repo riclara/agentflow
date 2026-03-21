@@ -21,7 +21,9 @@
   "files": [
     "dist",
     "schema.json",
-    "README.md"
+    "README.md",
+    "README.es.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsup src/index.ts --format esm --dts --clean",
