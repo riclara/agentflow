@@ -309,3 +309,5 @@ That gives you:
 
 For CI, npm publishing, and branch protection setup, see
 [`docs/repository-setup.md`](docs/repository-setup.md).
+Automatic versioning is now based on Conventional Commits through
+`release-please`.
