@@ -9,7 +9,7 @@ Desired rules live in `.github/branch-protection/main.json`:
 
 - require the `CI / verify` status check
 - require pull requests before merging
-- require 1 approval
+- require 0 approvals (single-maintainer setup)
 - dismiss stale reviews
 - require conversation resolution
 - require linear history
