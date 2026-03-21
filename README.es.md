@@ -311,3 +311,5 @@ Eso te da:
 
 Para el setup de CI, publicación en npm y protección de rama, revisa
 [`docs/repository-setup.md`](docs/repository-setup.md).
+El versionado automático ahora se basa en Conventional Commits mediante
+`release-please`.

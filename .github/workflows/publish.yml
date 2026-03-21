@@ -1,41 +1,74 @@
-name: Publish to npm
+name: Release
 
 on:
-  release:
-    types:
-      - published
+  push:
+    branches:
+      - main
 
 concurrency:
-  group: publish-${{ github.event.release.tag_name }}
+  group: release-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      sha: ${{ steps.release.outputs.sha }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+      version: ${{ steps.release.outputs.version }}
+    steps:
+      - name: Run release-please
+        id: release
+        uses: googleapis/release-please-action@v4
+        with:
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN || github.token }}
+          config-file: .github/release-please-config.json
+          manifest-file: .github/.release-please-manifest.json
+
   publish:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created == 'true' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write
     steps:
-      - name: Check out repository
+      - name: Check out released commit
         uses: actions/checkout@v5
+        with:
+          ref: ${{ needs.release-please.outputs.sha }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 24.x
           cache: npm
           registry-url: https://registry.npmjs.org
+
+      - name: Set up npm for trusted publishing
+        run: npm install --global npm@^11.5.1
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Verify release tag matches package version
+      - name: Verify released version matches package version
         run: |
-          TAG_NAME="${GITHUB_REF_NAME#v}"
+          RELEASE_VERSION="${{ needs.release-please.outputs.version }}"
+          RELEASE_TAG="${{ needs.release-please.outputs.tag_name }}"
           PACKAGE_VERSION="$(npm pkg get version | tr -d '"')"
 
-          if [ "$TAG_NAME" != "$PACKAGE_VERSION" ]; then
-            echo "Release tag v$PACKAGE_VERSION expected, got ${GITHUB_REF_NAME}" >&2
+          if [ "$PACKAGE_VERSION" != "$RELEASE_VERSION" ]; then
+            echo "Expected package version $RELEASE_VERSION, found $PACKAGE_VERSION" >&2
+            exit 1
+          fi
+
+          if [ "v$PACKAGE_VERSION" != "$RELEASE_TAG" ]; then
+            echo "Expected release tag v$PACKAGE_VERSION, found $RELEASE_TAG" >&2
             exit 1
           fi
 
@@ -49,6 +82,4 @@ jobs:
         run: npm test
 
       - name: Publish package
-        run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish
