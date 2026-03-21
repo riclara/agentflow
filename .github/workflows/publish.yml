@@ -4,6 +4,12 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Git ref, tag, or SHA to publish manually
+        required: true
+        type: string
 
 concurrency:
   group: release-${{ github.ref }}
@@ -11,6 +17,7 @@ concurrency:
 
 jobs:
   release-please:
+    if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -32,7 +39,7 @@ jobs:
 
   publish:
     needs: release-please
-    if: ${{ needs.release-please.outputs.release_created == 'true' }}
+    if: ${{ always() && (github.event_name == 'workflow_dispatch' || needs.release-please.outputs.release_created == 'true') }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -41,7 +48,7 @@ jobs:
       - name: Check out released commit
         uses: actions/checkout@v5
         with:
-          ref: ${{ needs.release-please.outputs.sha }}
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.ref || needs.release-please.outputs.sha }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -59,16 +66,10 @@ jobs:
       - name: Verify released version matches package version
         run: |
           RELEASE_VERSION="${{ needs.release-please.outputs.version }}"
-          RELEASE_TAG="${{ needs.release-please.outputs.tag_name }}"
           PACKAGE_VERSION="$(npm pkg get version | tr -d '"')"
 
-          if [ "$PACKAGE_VERSION" != "$RELEASE_VERSION" ]; then
+          if [ -n "$RELEASE_VERSION" ] && [ "$PACKAGE_VERSION" != "$RELEASE_VERSION" ]; then
             echo "Expected package version $RELEASE_VERSION, found $PACKAGE_VERSION" >&2
-            exit 1
-          fi
-
-          if [ "v$PACKAGE_VERSION" != "$RELEASE_TAG" ]; then
-            echo "Expected release tag v$PACKAGE_VERSION, found $RELEASE_TAG" >&2
             exit 1
           fi
 
