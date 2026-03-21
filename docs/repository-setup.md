@@ -57,10 +57,10 @@ No `NPM_TOKEN` repository secret is required.
 
 Recommended repository secret:
 
-- `RELEASE_PLEASE_TOKEN`: fine-grained GitHub token with repository access so
-  release PRs trigger CI checks under the current branch protection rules. If
-  it is absent, the workflow falls back to `GITHUB_TOKEN`, but release PRs may
-  not trigger `CI / verify`.
+- `RELEASE_PLEASE_TOKEN_AGENTFLOW`: fine-grained GitHub token with repository
+  access so release PRs trigger CI checks under the current branch protection
+  rules. If it is absent, the workflow falls back to `GITHUB_TOKEN`, but
+  release PRs may not trigger `CI / verify`.
 
 Configure trusted publishing in npm:
 
