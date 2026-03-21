@@ -50,11 +50,27 @@ It:
 - installs dependencies
 - validates that the release tag matches `package.json` version
 - rebuilds and reruns checks
-- publishes to npm with provenance
+- publishes to npm using trusted publishing (OIDC)
 
-Required repository secret:
+No `NPM_TOKEN` repository secret is required.
 
-- `NPM_TOKEN`: npm token with publish access to `@riclara/agentflow`
+Configure trusted publishing in npm:
+
+1. Go to `npmjs.com` → package `@riclara/agentflow` → `Settings` → `Trusted publishing`.
+2. Add a GitHub Actions trusted publisher with:
+   - Organization or user: `riclara`
+   - Repository: `agentflow`
+   - Workflow filename: `publish.yml`
+   - Environment name: leave empty unless you later protect publishing with a GitHub environment
+3. After the first successful trusted publish, go to `Settings` → `Publishing access`.
+4. Select `Require two-factor authentication and disallow tokens`.
+
+Workflow requirements:
+
+- GitHub-hosted runner
+- `id-token: write` permission
+- Node.js `24.x`
+- npm CLI `11.5.1` or later
 
 ## Recommended release flow
 
