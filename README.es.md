@@ -15,6 +15,8 @@ Genera cuatro agentes especializados:
 La lógica de orquestación vive en la skill generada `agentflow` para Claude y
 Codex. OpenCode recibe las definiciones de agentes para ejecución manual.
 
+Artículo relacionado: [Inteligencia artificial multiagente](https://ricardolara.dev/es/blog/inteligencia-artificial-multiagente/)
+
 ## Instalar la CLI
 
 Instala `agentflow` globalmente una vez:
