@@ -7,7 +7,7 @@ publishing, plus an explicit branch protection payload for `main`.
 
 Desired rules live in `.github/branch-protection/main.json`:
 
-- require the `CI / verify (pull_request)` status check
+- require the GitHub Actions check run `verify`
 - require pull requests before merging
 - require 0 approvals (single-maintainer setup)
 - dismiss stale reviews
