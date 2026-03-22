@@ -1,5 +1,7 @@
 # agentflow
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/riclara/agentflow)
+
 Idioma: Español | [English](README.md)
 
 `agentflow` es una CLI de Node.js que configura un flujo de desarrollo
