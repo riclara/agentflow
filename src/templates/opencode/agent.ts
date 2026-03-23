@@ -7,7 +7,7 @@ import { renderTesterPrompt } from "../prompts/tester.js";
 interface OpenCodeAgentTemplate {
   description: string;
   temperature: number;
-  mode: "primary" | "subagent";
+  mode: "subagent";
   toolsBlock?: string;
   body: string;
 }
@@ -38,7 +38,7 @@ function getOpenCodeTemplate(agentId: AgentId, config: AgentflowConfig): OpenCod
       return {
         description: "Analyzes requirements, plans architecture, reviews code. Only writes to docs/features/.",
         temperature: 0.2,
-        mode: "primary",
+        mode: "subagent",
         toolsBlock: `tools:
   write: true
   edit: false
