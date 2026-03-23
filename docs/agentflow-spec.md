@@ -982,7 +982,7 @@ name: planner
 description: Analyzes requirements, plans architecture, reviews code. Only writes to docs/features/.
 model: {{models.planner | opencode format}}
 temperature: 0.2
-mode: primary
+mode: subagent
 tools:
   write: true
   edit: false
