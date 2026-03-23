@@ -139,7 +139,7 @@ Depende de las herramientas seleccionadas:
   - `.opencode/agents/implementer.md`
   - `.opencode/agents/tester.md`
   - `.opencode/agents/documenter.md`
-  - sección `agents` fusionada en `opencode.json`
+  - sección `agent` fusionada en `opencode.json`
 
 También crea `.agentflow.json` y el directorio base `docs/`.
 
@@ -205,16 +205,25 @@ Spawn the documenter agent to write documentation
 
 #### OpenCode
 
-En este repo, OpenCode es solo manual. Usa los agentes generados por nombre:
+OpenCode no soporta skills, pero cada agente está configurado para sugerir el
+siguiente comando cuando termina. Inicia la tubería con un solo mensaje al
+planner:
 
 ```text
-@planner
-@implementer
-@tester
-@documenter
+@planner Plan this feature and write the result to docs/features/<slug>/plan.md.
+Feature: <describe tu feature>
 ```
 
-Luego dale a cada uno la tarea correspondiente para la fase que quieras correr.
+El planner escribirá el plan y terminará su respuesta con el comando exacto a
+ejecutar a continuación. Sigue las sugerencias para avanzar por la tubería:
+
+```
+planner → implementer → planner (review) → tester → documenter
+```
+
+Cada agente indica qué correr cuando termina, incluyendo la ruta correcta
+`docs/features/<slug>/`. Si una revisión o fase de tests falla, el agente
+sugiere el comando de corrección en lugar del siguiente paso.
 
 ## Qué decirle a cada agente
 

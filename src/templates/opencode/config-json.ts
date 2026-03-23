@@ -1,8 +1,8 @@
-export function renderOpenCodeAgentsConfig(): Record<string, string> {
+export function renderOpenCodeAgentsConfig(): Record<string, { path: string }> {
   return {
-    planner: ".opencode/agents/planner.md",
-    implementer: ".opencode/agents/implementer.md",
-    tester: ".opencode/agents/tester.md",
-    documenter: ".opencode/agents/documenter.md",
+    planner: { path: ".opencode/agents/planner.md" },
+    implementer: { path: ".opencode/agents/implementer.md" },
+    tester: { path: ".opencode/agents/tester.md" },
+    documenter: { path: ".opencode/agents/documenter.md" },
   };
 }

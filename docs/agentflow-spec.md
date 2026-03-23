@@ -85,7 +85,7 @@ Interactive setup that detects tools and generates configs.
 - `.agentflow.json` exists → ask: reinitialize or abort
 - `CLAUDE.md` exists → ask: (m)erge workflow section / (s)kip / (o)verwrite
 - `AGENTS.md` exists → same options
-- `opencode.json` exists → merge agents key into existing JSON
+- `opencode.json` exists → merge agent key into existing JSON
 - `.codex/config.toml` exists → merge [agents] section
 - Agent files → overwrite with warning
 
@@ -1036,7 +1036,7 @@ Same core prompt as Claude Code documenter.
 
 ### `opencode.json`
 
-Agents section merged into existing or created.
+Agent section merged into existing or created.
 
 ---
 
@@ -1159,7 +1159,7 @@ agentflow/
 │   │   │   └── agents-md.ts     # AGENTS.md workflow section
 │   │   └── opencode/
 │   │       ├── agent.ts         # .md with OpenCode frontmatter
-│   │       └── config-json.ts   # opencode.json agents section
+│   │       └── config-json.ts   # opencode.json agent section
 │   └── utils/
 │       ├── fs.ts
 │       ├── logger.ts
@@ -1217,7 +1217,7 @@ What `agentflow init` generates per tool:
 | `.opencode/agents/implementer.md` | — | — | — | — | ✓ |
 | `.opencode/agents/tester.md` | — | — | — | — | ✓ |
 | `.opencode/agents/documenter.md` | — | — | — | — | ✓ |
-| `opencode.json` (agents) | — | — | — | — | ✓ |
+| `opencode.json` (agent) | — | — | — | — | ✓ |
 | `.agentflow.json` | ✓ | ✓ | ✓ | ✓ | ✓ |
 | `docs/` | ✓ | ✓ | ✓ | ✓ | ✓ |
 

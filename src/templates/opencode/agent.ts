@@ -44,28 +44,28 @@ function getOpenCodeTemplate(agentId: AgentId, config: AgentflowConfig): OpenCod
   edit: false
   bash: false
 `,
-        body: renderPlannerPrompt(config),
+        body: renderPlannerPrompt(config, "opencode"),
       };
     case "implementer":
       return {
         description: "Implements code from the feature plan path. Fixes issues from the feature review path.",
         temperature: 0.3,
         mode: "subagent",
-        body: renderImplementerPrompt(config),
+        body: renderImplementerPrompt(config, "opencode"),
       };
     case "tester":
       return {
         description: "Writes and runs tests. Never modifies implementation or docs.",
         temperature: 0.2,
         mode: "subagent",
-        body: renderTesterPrompt(config),
+        body: renderTesterPrompt(config, "opencode"),
       };
     case "documenter":
       return {
         description: "Writes project documentation. Only runs after tests pass.",
         temperature: 0.2,
         mode: "subagent",
-        body: renderDocumenterPrompt(config),
+        body: renderDocumenterPrompt(config, "opencode"),
       };
   }
 }
