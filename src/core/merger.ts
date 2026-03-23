@@ -53,6 +53,7 @@ export function mergeOpencodeJson(existingContent: string | null, agentsSection:
       ...agentsSection,
     },
   };
+  delete (merged as Record<string, unknown>).agents;
 
   return `${JSON.stringify(merged, null, 2)}\n`;
 }
