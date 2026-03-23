@@ -1159,7 +1159,7 @@ agentflow/
 │   │   │   └── agents-md.ts     # AGENTS.md workflow section
 │   │   └── opencode/
 │   │       ├── agent.ts         # .md with OpenCode frontmatter
-│   │       └──         config-json.ts   # opencode.json agent section
+│   │       └── config-json.ts   # opencode.json agent section
 │   └── utils/
 │       ├── fs.ts
 │       ├── logger.ts

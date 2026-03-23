@@ -44,12 +44,12 @@ export function stripVersionComment(content: string): string {
   return next.replace(/^\n+/, "");
 }
 
-export function mergeOpencodeJson(existingContent: string | null, agentsSection: Record<string, string>): string {
+export function mergeOpencodeJson(existingContent: string | null, agentsSection: Record<string, { path: string }>): string {
   const base = existingContent?.trim() ? (JSON.parse(existingContent) as Record<string, unknown>) : {};
   const merged = {
     ...base,
     agent: {
-      ...(((base.agent as Record<string, unknown> | undefined) ?? {}) as Record<string, string>),
+      ...(((base.agent as Record<string, unknown> | undefined) ?? {}) as Record<string, { path: string }>),
       ...agentsSection,
     },
   };
