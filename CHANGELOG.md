@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.4](https://github.com/riclara/agentflow/compare/agentflow-v1.0.3...agentflow-v1.0.4) (2026-03-23)
+
+
+### Bug Fixes
+
+* sync AGENTFLOW_VERSION with package.json via release-please ([#11](https://github.com/riclara/agentflow/issues/11)) ([42cc5a5](https://github.com/riclara/agentflow/commit/42cc5a553f883294b964f04f51a735a2ed043413))
+
 ## [1.0.3](https://github.com/riclara/agentflow/compare/agentflow-v1.0.2...agentflow-v1.0.3) (2026-03-23)
 
 
