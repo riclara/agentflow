@@ -48,8 +48,8 @@ export function mergeOpencodeJson(existingContent: string | null, agentsSection:
   const base = existingContent?.trim() ? (JSON.parse(existingContent) as Record<string, unknown>) : {};
   const merged = {
     ...base,
-    agents: {
-      ...(((base.agents as Record<string, unknown> | undefined) ?? {}) as Record<string, string>),
+    agent: {
+      ...(((base.agent as Record<string, unknown> | undefined) ?? {}) as Record<string, string>),
       ...agentsSection,
     },
   };

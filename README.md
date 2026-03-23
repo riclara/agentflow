@@ -138,7 +138,7 @@ Depending on the selected tools:
   - `.opencode/agents/implementer.md`
   - `.opencode/agents/tester.md`
   - `.opencode/agents/documenter.md`
-  - `agents` section merged into `opencode.json`
+  - `agent` section merged into `opencode.json`
 
 It also creates `.agentflow.json` and the base `docs/` directory.
 
