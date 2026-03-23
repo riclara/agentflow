@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.6](https://github.com/riclara/agentflow/compare/agentflow-v1.0.5...agentflow-v1.0.6) (2026-03-23)
+
+
+### Bug Fixes
+
+* **codex:** update [agents] config format to per-role struct ([#15](https://github.com/riclara/agentflow/issues/15)) ([77e7a0c](https://github.com/riclara/agentflow/commit/77e7a0c29fca55045d4347eea5a9698f636eecd4))
+
 ## [1.0.5](https://github.com/riclara/agentflow/compare/agentflow-v1.0.4...agentflow-v1.0.5) (2026-03-23)
 
 
