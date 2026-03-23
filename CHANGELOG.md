@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.5](https://github.com/riclara/agentflow/compare/agentflow-v1.0.4...agentflow-v1.0.5) (2026-03-23)
+
+
+### Bug Fixes
+
+* **opencode:** planner mode primary → subagent + version sync ([#13](https://github.com/riclara/agentflow/issues/13)) ([3ee3934](https://github.com/riclara/agentflow/commit/3ee393484a6c92dfbf7ef9ccd4965d6b4d532614))
+
 ## [1.0.4](https://github.com/riclara/agentflow/compare/agentflow-v1.0.3...agentflow-v1.0.4) (2026-03-23)
 
 
