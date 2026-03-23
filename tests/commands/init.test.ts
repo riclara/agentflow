@@ -5,7 +5,7 @@ import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { runInitCommand } from "../../src/commands/init.js";
-import { readConfig } from "../../src/core/schema.js";
+import { AGENTFLOW_VERSION, readConfig } from "../../src/core/schema.js";
 
 const tempDirs: string[] = [];
 
@@ -35,8 +35,8 @@ describe("runInitCommand", () => {
     expect(config).not.toBeNull();
     expect(config?.tools).toEqual(["claude-code", "codex"]);
     expect(config?.managedFiles).toMatchObject({
-      ".claude/skills/agentflow/SKILL.md": "1.0.0",
-      ".codex/agents/planner.toml": "1.0.0",
+      ".claude/skills/agentflow/SKILL.md": AGENTFLOW_VERSION,
+      ".codex/agents/planner.toml": AGENTFLOW_VERSION,
       "CLAUDE.md": "partial",
       "AGENTS.md": "partial",
     });

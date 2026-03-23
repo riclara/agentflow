@@ -3,7 +3,13 @@
   "packages": {
     ".": {
       "release-type": "node",
-      "package-name": "@riclara/agentflow"
+      "package-name": "@riclara/agentflow",
+      "extra-files": [
+        {
+          "type": "generic",
+          "path": "src/core/schema.ts"
+        }
+      ]
     }
   }
 }

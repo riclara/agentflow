@@ -6,7 +6,7 @@ import { afterEach, describe, expect, it } from "vitest";
 
 import { buildManagedFiles, planGeneration, renderManagedFile, writeGenerationPlan } from "../src/core/generator.js";
 import { mapModelsForTool } from "../src/core/models.js";
-import { createConfig } from "../src/core/schema.js";
+import { AGENTFLOW_VERSION, createConfig } from "../src/core/schema.js";
 import { renderClaudeAgent } from "../src/templates/claude-code/agent.js";
 import { renderClaudeSkill } from "../src/templates/claude-code/skill.js";
 import { renderCodexAgent } from "../src/templates/codex/agent-toml.js";
@@ -48,7 +48,7 @@ describe("generator", () => {
     const writtenPaths = await writeGenerationPlan(cwd, plan);
     expect(writtenPaths).toContain(".claude/agents/planner.md");
     expect(buildManagedFiles(config, writtenPaths)).toMatchObject({
-      ".claude/agents/planner.md": "1.0.0",
+      ".claude/agents/planner.md": AGENTFLOW_VERSION,
       "CLAUDE.md": "partial",
       "AGENTS.md": "partial",
     });
