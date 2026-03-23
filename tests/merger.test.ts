@@ -1,6 +1,48 @@
 import { describe, expect, it } from "vitest";
 
-import { mergeOpencodeJson } from "../src/core/merger.js";
+import { mergeCodexConfig, mergeOpencodeJson } from "../src/core/merger.js";
+
+const EXPECTED_AGENT_BLOCKS =
+  `[agents.planner]\ndescription = "Senior software architect that creates plans and reviews code. Only writes to docs/features/."\nconfig_file = ".codex/agents/planner.toml"\n\n` +
+  `[agents.implementer]\ndescription = "Software developer that executes implementation tasks from plans"\nconfig_file = ".codex/agents/implementer.toml"\n\n` +
+  `[agents.tester]\ndescription = "QA engineer that writes and runs tests"\nconfig_file = ".codex/agents/tester.toml"\n\n` +
+  `[agents.documenter]\ndescription = "Technical writer that documents tested and approved code"\nconfig_file = ".codex/agents/documenter.toml"\n`;
+
+describe("mergeCodexConfig", () => {
+  it("generates agent blocks for null input", () => {
+    expect(mergeCodexConfig(null)).toBe(EXPECTED_AGENT_BLOCKS);
+  });
+
+  it("generates agent blocks for empty string input", () => {
+    expect(mergeCodexConfig("")).toBe(EXPECTED_AGENT_BLOCKS);
+  });
+
+  it("appends agent blocks when no [agents] section exists", () => {
+    const existing = `# Some comment\n[mcp_servers.reporag]\ncommand = "test"`;
+    expect(mergeCodexConfig(existing)).toBe(`${existing}\n\n${EXPECTED_AGENT_BLOCKS}`);
+  });
+
+  it("replaces old [agents] directory format with new per-role blocks", () => {
+    const existing = `# Some comment\n[mcp_servers.reporag]\ncommand = "test"\n\n[agents]\ndirectory = ".codex/agents"`;
+    expect(mergeCodexConfig(existing)).toBe(`# Some comment\n[mcp_servers.reporag]\ncommand = "test"\n\n${EXPECTED_AGENT_BLOCKS}`);
+  });
+
+  it("preserves content around old [agents] section and replaces with new blocks", () => {
+    const existing = `# Some comment\n[mcp_servers.reporag]\ncommand = "test"\n\n[agents]\ndirectory = ".codex/agents"\n\n[other_section]\nkey = "value"`;
+    expect(mergeCodexConfig(existing)).toBe(`# Some comment\n[mcp_servers.reporag]\ncommand = "test"\n\n[other_section]\nkey = "value"\n\n${EXPECTED_AGENT_BLOCKS}`);
+  });
+
+  it("replaces existing [agents.*] blocks on re-run", () => {
+    const existing = `[mcp_servers.reporag]\ncommand = "test"\n\n[agents.planner]\ndescription = "old"\nconfig_file = ".codex/agents/planner.toml"`;
+    expect(mergeCodexConfig(existing)).toBe(`[mcp_servers.reporag]\ncommand = "test"\n\n${EXPECTED_AGENT_BLOCKS}`);
+  });
+
+  it("is idempotent: mergeCodexConfig(mergeCodexConfig(null)) === mergeCodexConfig(null)", () => {
+    const first = mergeCodexConfig(null);
+    const second = mergeCodexConfig(first);
+    expect(second).toBe(first);
+  });
+});
 
 describe("mergeOpencodeJson", () => {
   const agentsSection = {

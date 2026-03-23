@@ -58,19 +58,34 @@ export function mergeOpencodeJson(existingContent: string | null, agentsSection:
   return `${JSON.stringify(merged, null, 2)}\n`;
 }
 
+const CODEX_AGENTS = [
+  { role: "planner", description: "Senior software architect that creates plans and reviews code. Only writes to docs/features/." },
+  { role: "implementer", description: "Software developer that executes implementation tasks from plans" },
+  { role: "tester", description: "QA engineer that writes and runs tests" },
+  { role: "documenter", description: "Technical writer that documents tested and approved code" },
+];
+
 export function mergeCodexConfig(existingContent: string | null): string {
-  const section = ['[agents]', 'directory = ".codex/agents"'].join("\n");
+  const agentBlocks = CODEX_AGENTS.map(
+    ({ role, description }) =>
+      `[agents.${role}]\ndescription = "${description}"\nconfig_file = ".codex/agents/${role}.toml"`,
+  ).join("\n\n");
 
   if (!existingContent?.trim()) {
-    return `${section}\n`;
+    return `${agentBlocks}\n`;
   }
 
-  const pattern = /^\[agents\][\s\S]*?(?=^\[[^\]]+\]|\s*$)/m;
-  if (pattern.test(existingContent)) {
-    return `${existingContent.replace(pattern, section).trimEnd()}\n`;
+  // Strip old [agents] directory format and any existing [agents.*] subsections
+  const stripped = existingContent
+    .replace(/\n?\[agents\]\ndirectory = "[^"]*"\n?/g, "")
+    .replace(/\n?\[agents\.[^\]]+\][^\[]*(?=\n\[|\s*$)/g, "")
+    .trimEnd();
+
+  if (!stripped) {
+    return `${agentBlocks}\n`;
   }
 
-  return `${existingContent.trimEnd()}\n\n${section}\n`;
+  return `${stripped}\n\n${agentBlocks}\n`;
 }
 
 export function extractModelFromFile(content: string): string | undefined {
