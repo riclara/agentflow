@@ -81,6 +81,10 @@ export function mergeCodexConfig(existingContent: string | null): string {
     .replace(/\n?\[agents\.[^\]]+\][^\[]*(?=\n\[|\s*$)/g, "")
     .trimEnd();
 
+  if (!stripped) {
+    return `${agentBlocks}\n`;
+  }
+
   return `${stripped}\n\n${agentBlocks}\n`;
 }
 

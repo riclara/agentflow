@@ -36,6 +36,12 @@ describe("mergeCodexConfig", () => {
     const existing = `[mcp_servers.reporag]\ncommand = "test"\n\n[agents.planner]\ndescription = "old"\nconfig_file = ".codex/agents/planner.toml"`;
     expect(mergeCodexConfig(existing)).toBe(`[mcp_servers.reporag]\ncommand = "test"\n\n${EXPECTED_AGENT_BLOCKS}`);
   });
+
+  it("is idempotent: mergeCodexConfig(mergeCodexConfig(null)) === mergeCodexConfig(null)", () => {
+    const first = mergeCodexConfig(null);
+    const second = mergeCodexConfig(first);
+    expect(second).toBe(first);
+  });
 });
 
 describe("mergeOpencodeJson", () => {
