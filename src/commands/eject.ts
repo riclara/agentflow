@@ -1,31 +1,38 @@
 import path from "node:path";
 
-import { stripAgentflowMarkers, stripVersionComment } from "../core/merger.js";
-import { CONFIG_FILE, readConfig } from "../core/schema.js";
-import { readTextIfExists, removeFileIfExists, writeText } from "../utils/fs.js";
-import { success } from "../utils/logger.js";
+import { CONFIG_FILE } from "../core/schema.js";
+import { removeFileIfExists, exists } from "../utils/fs.js";
+import { success, warn } from "../utils/logger.js";
+
+/**
+ * Bootstrap files managed by agentflow in runtime-first mode.
+ * These are the only files eject needs to remove.
+ */
+const BOOTSTRAP_FILES = [
+  ".claude/skills/agentflow/SKILL.md",
+  ".agents/skills/agentflow/SKILL.md",
+  ".opencode/agents/agentflow.md",
+];
 
 export async function runEjectCommand(cwd: string): Promise<void> {
-  const config = await readConfig(cwd);
-  if (!config) {
+  if (!(await exists(path.join(cwd, CONFIG_FILE)))) {
     throw new Error("No .agentflow.json found. Run `agentflow init` first.");
   }
 
-  for (const targetPath of Object.keys(config.managedFiles)) {
-    const absolutePath = path.join(cwd, targetPath);
-    const content = await readTextIfExists(absolutePath);
-    if (content === null) {
-      continue;
+  // Remove bootstrap files (runtime-first managed outputs)
+  for (const rel of BOOTSTRAP_FILES) {
+    const abs = path.join(cwd, rel);
+    if (await exists(abs)) {
+      await removeFileIfExists(abs);
+      console.log(`  removed ${rel}`);
     }
-
-    const nextContent =
-      targetPath === "CLAUDE.md" || targetPath === "AGENTS.md"
-        ? stripAgentflowMarkers(content)
-        : stripVersionComment(content);
-
-    await writeText(absolutePath, nextContent);
   }
 
+  // Remove config
   await removeFileIfExists(path.join(cwd, CONFIG_FILE));
-  success("agentflow management removed. Generated files remain in place.");
+
+  warn("Vendor role files (.claude/agents/, .codex/agents/, .opencode/agents/) are not removed automatically.");
+  warn("Remove them manually if no longer needed.");
+
+  success("agentflow management removed.");
 }
