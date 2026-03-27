@@ -1,5 +1,4 @@
 import { spawn } from "node:child_process";
-import pty from "node-pty";
 
 export interface SpawnResult {
   stdout: string;
@@ -58,31 +57,32 @@ const ANSI_RE = /\x1b\[[0-9;]*[a-zA-Z]|\x1b[()][AB012]|\r/g;
  * Required for TUI apps (e.g. codex exec) that hang or misbehave without a real terminal.
  * stdout and stderr are merged (PTY combines them); ANSI codes are stripped from the result.
  */
-export function spawnWithPty(
+export async function spawnWithPty(
   cmd: string,
   args: string[],
   options: { cwd: string; maxBuffer?: number },
 ): Promise<SpawnResult> {
-  return new Promise((resolve, reject) => {
-    const maxBuffer = options.maxBuffer ?? 10 * 1024 * 1024;
-    const chunks: string[] = [];
-    let totalLen = 0;
+  let ptyModule: typeof import("node-pty");
+  try {
+    ptyModule = await import("node-pty");
+  } catch {
+    // node-pty not available in this environment — fall back to pipe-based spawn
+    return spawnCollect(cmd, args, options);
+  }
 
-    let proc: ReturnType<typeof pty.spawn>;
-    try {
-      proc = pty.spawn(cmd, args, {
-        name: "xterm-256color",
-        cols: 220,
-        rows: 50,
-        cwd: options.cwd,
-        env: { ...process.env },
-      });
-    } catch {
-      // node-pty not available in this environment — fall back to pipe-based spawn
-      resolve(spawnCollect(cmd, args, options));
-      return;
-    }
+  const maxBuffer = options.maxBuffer ?? 10 * 1024 * 1024;
+  const chunks: string[] = [];
+  let totalLen = 0;
 
+  const proc = ptyModule.default.spawn(cmd, args, {
+    name: "xterm-256color",
+    cols: 220,
+    rows: 50,
+    cwd: options.cwd,
+    env: { ...process.env },
+  });
+
+  return new Promise((resolve) => {
     proc.onData((data) => {
       totalLen += data.length;
       if (totalLen <= maxBuffer) chunks.push(data);

@@ -106,6 +106,7 @@ export async function runAgentCommand(
     provider,
     model,
     sandbox: runtimeConfig.roles[role].sandbox,
+    effort: runtimeConfig.roles[role].effort,
     prompt,
     task: options.task,
     featureSlug: options.feature,

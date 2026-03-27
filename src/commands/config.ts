@@ -1,6 +1,6 @@
 import path from "node:path";
 
-import { CONFIG_FILE } from "../core/schema.js";
+import { CONFIG_FILE, normalizePathAlias } from "../core/schema.js";
 import { isLegacyConfig, readRuntimeConfig, writeRuntimeConfig } from "../runtime/config.js";
 import { AgentflowRuntimeConfigSchema } from "../runtime/config.js";
 import { exists, readJson, writeJson } from "../utils/fs.js";
@@ -61,7 +61,7 @@ export async function showConfigCommand(cwd: string): Promise<void> {
 
 export async function getConfigCommand(cwd: string, targetPath: string): Promise<void> {
   const raw = await readRawConfig(cwd);
-  const segments = targetPath.split(".");
+  const segments = normalizePathAlias(targetPath).split(".");
   const value = getValueAtPath(raw, segments);
   if (typeof value === "undefined") {
     throw new Error(`Unknown config path: ${targetPath}`);
@@ -75,7 +75,7 @@ export async function getConfigCommand(cwd: string, targetPath: string): Promise
 
 export async function setConfigCommand(cwd: string, targetPath: string, rawValue: string): Promise<void> {
   const raw = await readRawConfig(cwd) as Record<string, unknown>;
-  const segments = targetPath.split(".");
+  const segments = normalizePathAlias(targetPath).split(".");
   const current = getValueAtPath(raw, segments);
   if (typeof current === "undefined") {
     throw new Error(`Unknown config path: ${targetPath}`);
