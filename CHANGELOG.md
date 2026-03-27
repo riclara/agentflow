@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/riclara/agentflow/compare/agentflow-v1.0.6...agentflow-v1.1.0) (2026-03-27)
+
+
+### Features
+
+* runtime-first architecture refactor ([#18](https://github.com/riclara/agentflow/issues/18)) ([db54ce0](https://github.com/riclara/agentflow/commit/db54ce0857944e205c3d8ad187381a6856cceddb))
+
 ## [1.0.6](https://github.com/riclara/agentflow/compare/agentflow-v1.0.5...agentflow-v1.0.6) (2026-03-23)
 
 
