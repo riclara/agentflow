@@ -1,6 +1,6 @@
 import path from "node:path";
 
-import { CONFIG_FILE, normalizePathAlias } from "../core/schema.js";
+import { CONFIG_FILE, normalizePathAlias, validateConfig } from "../core/schema.js";
 import { isLegacyConfig, readRuntimeConfig, writeRuntimeConfig } from "../runtime/config.js";
 import { AgentflowRuntimeConfigSchema } from "../runtime/config.js";
 import { exists, readJson, writeJson } from "../utils/fs.js";
@@ -92,9 +92,11 @@ export async function setConfigCommand(cwd: string, targetPath: string, rawValue
     }
     await writeRuntimeConfig(cwd, result.data);
   } else {
-    // Legacy: just write raw JSON back
+    // Legacy: validate before writing back
+    const rawUnknown: unknown = raw;
+    validateConfig(rawUnknown);
     const configPath = path.join(cwd, CONFIG_FILE);
-    await writeJson(configPath, raw);
+    await writeJson(configPath, rawUnknown);
   }
 
   success(`Updated ${targetPath}.`);

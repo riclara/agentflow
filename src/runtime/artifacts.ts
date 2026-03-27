@@ -4,7 +4,7 @@ import path from "node:path";
 import { ensureDir, ensureParentDir } from "../utils/fs.js";
 
 export function slugify(description: string): string {
-  return description
+  const slug = description
     .toLowerCase()
     .replace(/[^a-z0-9\s-]/g, "")
     .trim()
@@ -12,6 +12,10 @@ export function slugify(description: string): string {
     .replace(/-+/g, "-")
     .slice(0, 50)
     .replace(/-+$/, "");
+  if (!slug) {
+    return `feature-${Date.now()}`;
+  }
+  return slug;
 }
 
 export function generateRunId(): string {

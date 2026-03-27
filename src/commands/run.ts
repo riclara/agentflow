@@ -47,7 +47,7 @@ async function runRole(
   await validateProviderAvailable(provider);
 
   const runId = generateRunId();
-  await createTraceDir(cwd, runId);
+  const traceDirPath = await createTraceDir(cwd, runId);
 
   const adapter = ADAPTERS[provider];
   if (!adapter) {
@@ -63,7 +63,7 @@ async function runRole(
     prompt,
     task,
     featureSlug,
-    traceDir: runId,
+    traceDir: traceDirPath,
     json: false,
   });
 }
