@@ -11,6 +11,7 @@ import { success, warn } from "../utils/logger.js";
 const BOOTSTRAP_FILES = [
   ".claude/skills/agentflow/SKILL.md",
   ".agents/skills/agentflow/SKILL.md",
+  ".codex/agents/agentflow.md",
   ".opencode/agents/agentflow.md",
 ];
 

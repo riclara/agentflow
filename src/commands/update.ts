@@ -31,6 +31,8 @@ function getBootstrapEntries(cwd: string, config: AgentflowRuntimeConfig): Boots
   if (config.tools.includes("codex")) {
     const rel = ".agents/skills/agentflow/SKILL.md";
     entries.push({ rel, abs: path.join(cwd, rel), content: renderCodexBootstrapSkill() });
+    const rel2 = ".codex/agents/agentflow.md";
+    entries.push({ rel: rel2, abs: path.join(cwd, rel2), content: renderCodexBootstrapSkill() });
   }
   if (config.tools.includes("opencode")) {
     const rel = ".opencode/agents/agentflow.md";

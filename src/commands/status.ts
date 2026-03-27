@@ -97,6 +97,8 @@ export async function runStatusCommand(cwd: string): Promise<void> {
   if (config.tools.includes("codex")) {
     const p = path.join(cwd, ".agents", "skills", "agentflow", "SKILL.md");
     console.log(`  ${(await exists(p)) ? "✓" : "✗"} .agents/skills/agentflow/SKILL.md`);
+    const p2 = path.join(cwd, ".codex", "agents", "agentflow.md");
+    console.log(`  ${(await exists(p2)) ? "✓" : "✗"} .codex/agents/agentflow.md`);
   }
   if (config.tools.includes("opencode")) {
     const p = path.join(cwd, ".opencode", "agents", "agentflow.md");
