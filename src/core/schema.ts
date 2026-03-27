@@ -3,7 +3,7 @@ import path from "node:path";
 import { exists, readJson, writeJson } from "../utils/fs.js";
 
 // x-release-please-start-version
-export const AGENTFLOW_VERSION = "1.0.6";
+export const AGENTFLOW_VERSION = "1.1.0";
 // x-release-please-end
 export const NPM_PACKAGE_NAME = "@riclara/agentflow";
 export const AGENTFLOW_SCHEMA_URL = "https://unpkg.com/@riclara/agentflow/schema.json";
