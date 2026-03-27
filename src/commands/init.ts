@@ -251,9 +251,9 @@ export async function runInitCommand(cwd: string, options: InitCommandOptions): 
 
   // Write bootstrap files
   for (const file of files) {
-    await writeText(file.path, file.content);
     const rel = path.relative(cwd, file.path);
     const fileExists = await exists(file.path);
+    await writeText(file.path, file.content);
     console.log(`  ${formatAction(fileExists ? "OVERWRITE" : "CREATE", rel)}`);
   }
 

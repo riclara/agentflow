@@ -57,8 +57,8 @@ export function migrateLegacyConfig(legacy: LegacyAgentflowConfig): AgentflowRun
 
   const cheapestModel: Record<ProviderId, string> = {
     "claude-code": "haiku",
-    codex: "haiku",
-    opencode: "haiku",
+    codex: "gpt-5.4-mini",
+    opencode: "anthropic/claude-haiku-4-5-20251001",
   };
 
   const makeRole = (
