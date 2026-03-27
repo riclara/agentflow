@@ -74,21 +74,21 @@ export async function spawnWithPty(
   const chunks: string[] = [];
   let totalLen = 0;
 
-  const proc = ptyModule.default.spawn(cmd, args, {
+  const proc = ptyModule.spawn(cmd, args, {
     name: "xterm-256color",
     cols: 220,
     rows: 50,
     cwd: options.cwd,
-    env: { ...process.env },
+    env: { ...process.env } as Record<string, string>,
   });
 
   return new Promise((resolve) => {
-    proc.onData((data) => {
+    proc.onData((data: string) => {
       totalLen += data.length;
       if (totalLen <= maxBuffer) chunks.push(data);
     });
 
-    proc.onExit(({ exitCode }) => {
+    proc.onExit(({ exitCode }: { exitCode: number }) => {
       const raw = chunks.join("").replace(ANSI_RE, "");
       resolve({ stdout: raw, stderr: "", code: exitCode ?? 1 });
     });
