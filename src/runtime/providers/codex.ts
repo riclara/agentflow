@@ -1,11 +1,7 @@
-import { execFile } from "node:child_process";
-import { promisify } from "node:util";
-
 import { isExecutableInPath, writeJson, writeText } from "../../utils/fs.js";
+import { spawnWithPty } from "../../utils/process.js";
 import { generateRunId, tracePaths } from "../artifacts.js";
 import type { ProviderAdapter, RunProviderInput, RunRoleResult } from "../provider-adapter.js";
-
-const execFileAsync = promisify(execFile);
 
 export const codexAdapter: ProviderAdapter = {
   id: "codex",
@@ -36,28 +32,25 @@ export const codexAdapter: ProviderAdapter = {
       role: input.role,
       provider: "codex",
       model: input.model,
+      effort: input.effort,
       sandbox: input.sandbox,
       featureSlug: input.featureSlug,
       task: input.task,
     });
 
-    const args = ["exec", "--cd", input.cwd, "--sandbox", input.sandbox, fullPrompt];
+    const args = [
+      "exec",
+      "--cd", input.cwd,
+      "--sandbox", input.sandbox,
+      ...(input.effort ? ["--reasoning-effort", input.effort] : []),
+      fullPrompt,
+    ];
 
-    let stdout = "";
-    let stderr = "";
+    const { stdout, stderr, code } = await spawnWithPty("codex", args, {
+      cwd: input.cwd,
+    });
 
-    try {
-      const result = await execFileAsync("codex", args, {
-        cwd: input.cwd,
-        maxBuffer: 10 * 1024 * 1024,
-      });
-      stdout = result.stdout;
-      stderr = result.stderr;
-    } catch (err: unknown) {
-      const execErr = err as { stdout?: string; stderr?: string };
-      stdout = execErr.stdout ?? "";
-      stderr = execErr.stderr ?? "";
-
+    if (code !== 0) {
       await writeText(paths.stdout, stdout + (stderr ? `\n--- stderr ---\n${stderr}` : ""));
       await writeJson(paths.result, { ok: false, code: "execution_failed", message: stderr || "non-zero exit" });
 

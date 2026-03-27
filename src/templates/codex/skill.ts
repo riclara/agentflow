@@ -102,7 +102,7 @@ Spawn the tester agent to:
 - Execute only ## Test Tasks from FEATURE_DIR/plan.md
 - Create test files listed in '## Test Files' section of FEATURE_DIR/plan.md
 - Write tests covering acceptance criteria
-- Execute tests with: ${config.project.testRunner}
+- Auto-detect and run tests from the project (package.json scripts, vitest.config.*, jest.config.*, pytest.ini, go.mod, Cargo.toml, Gemfile)
 - If pass: report success
 - If fail: update FEATURE_DIR/review.md with:
   ## Status: NEEDS_CHANGES

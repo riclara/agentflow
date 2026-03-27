@@ -33,7 +33,7 @@ export async function runAgentCommand(
   // Validate role
   const roleResult = AgentId.safeParse(roleArg);
   if (!roleResult.success) {
-    logger.error(`Invalid role "${roleArg}". Expected: planner, implementer, tester, documenter.`);
+    logger.error(`Invalid role "${roleArg}". Expected: planner, implementer, tester, documenter, classifier.`);
     process.exitCode = 1;
     return;
   }
@@ -69,6 +69,12 @@ export async function runAgentCommand(
       return;
     }
     cliProvider = providerResult.data;
+  }
+
+  if (!runtimeConfig.roles[role]) {
+    logger.error(`Role "${role}" is not configured. Run agentflow init to regenerate configuration.`);
+    process.exitCode = 1;
+    return;
   }
 
   const provider = resolveProvider(role, runtimeConfig, cliProvider);

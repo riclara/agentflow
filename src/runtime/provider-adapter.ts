@@ -6,6 +6,7 @@ export interface RunProviderInput {
   provider: ProviderId;
   model: string;
   sandbox: "read-only" | "workspace-write";
+  effort?: string;
   prompt: string;
   task: string;
   featureSlug?: string;

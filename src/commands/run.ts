@@ -58,7 +58,8 @@ async function runRole(
     role,
     provider,
     model,
-    sandbox: config.roles[role].sandbox,
+    sandbox: config.roles[role]!.sandbox,
+    effort: config.roles[role]!.effort,
     prompt,
     task,
     featureSlug,
@@ -214,37 +215,44 @@ export async function runPipelineCommand(
     logger.warn("Max review iterations reached without explicit approval. Continuing to test.");
   }
 
-  // Step 4: Tester
-  logger.header("\n[4/5] Testing…");
-  const testResult = await runRole(
-    "tester",
-    `Run tests for the feature described in: ${paths.plan}\nTest runner: ${runtimeConfig.project.testRunner}`,
-    slug,
-    runtimeConfig,
-    cwd,
-    cliProvider,
-    options.model,
-  );
+  // Steps 4+5: Tester and Documenter in parallel
+  logger.header("\n[4/5] Testing and documenting in parallel…");
+  const testRunnerInstruction = "Auto-detect the test runner from the project (package.json scripts, vitest.config.*, jest.config.*, pytest.ini, go.mod, Cargo.toml, Gemfile) and run it.";
+
+  const [testResult, docResult] = await Promise.all([
+    runRole(
+      "tester",
+      `Run tests for the feature described in: ${paths.plan}\n${testRunnerInstruction}`,
+      slug,
+      runtimeConfig,
+      cwd,
+      cliProvider,
+      options.model,
+    ),
+    runRole(
+      "documenter",
+      `Document the feature described in: ${paths.plan}`,
+      slug,
+      runtimeConfig,
+      cwd,
+      cliProvider,
+      options.model,
+    ),
+  ]);
+
   await appendActivityLog(paths.activityLog, `tester: ${testResult.ok ? "ok" : testResult.code ?? "failed"}`);
+  await appendActivityLog(paths.activityLog, `documenter: ${docResult.ok ? "ok" : docResult.code ?? "failed"}`);
+
   if (!testResult.ok) {
     logger.error(`Tests failed: ${testResult.message ?? testResult.code}`);
+    if (!docResult.ok) {
+      logger.warn(`Documentation also failed: ${docResult.message ?? docResult.code}`);
+    }
     process.exitCode = 1;
     return;
   }
   logger.success("Tests passed.");
 
-  // Step 5: Documenter (only if tests passed)
-  logger.header("\n[5/5] Documenting…");
-  const docResult = await runRole(
-    "documenter",
-    `Document the feature described in: ${paths.plan}`,
-    slug,
-    runtimeConfig,
-    cwd,
-    cliProvider,
-    options.model,
-  );
-  await appendActivityLog(paths.activityLog, `documenter: ${docResult.ok ? "ok" : docResult.code ?? "failed"}`);
   if (!docResult.ok) {
     logger.warn(`Documentation step failed: ${docResult.message ?? docResult.code}`);
   } else {

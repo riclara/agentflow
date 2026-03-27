@@ -1,4 +1,5 @@
 import { AGENTFLOW_SCHEMA_URL, AGENTFLOW_VERSION } from "../core/schema.js";
+import { renderClassifierPrompt } from "../templates/prompts/classifier.js";
 import { renderDocumenterPrompt } from "../templates/prompts/documenter.js";
 import { renderImplementerPrompt } from "../templates/prompts/implementer.js";
 import { renderPlannerPrompt } from "../templates/prompts/planner.js";
@@ -28,7 +29,7 @@ export interface LegacyAgentflowConfig {
   project: {
     language: string;
     framework: string;
-    testRunner: string;
+    testRunner?: string;
   };
   managedFiles?: Record<string, string>;
 }
@@ -54,8 +55,14 @@ export function migrateLegacyConfig(legacy: LegacyAgentflowConfig): AgentflowRun
     managedFiles: legacy.managedFiles ?? {},
   };
 
+  const cheapestModel: Record<ProviderId, string> = {
+    "claude-code": "haiku",
+    codex: "haiku",
+    opencode: "haiku",
+  };
+
   const makeRole = (
-    agentId: "planner" | "implementer" | "tester" | "documenter",
+    agentId: "planner" | "implementer" | "tester" | "documenter" | "classifier",
     model: string,
     promptBase: string,
   ) => ({
@@ -85,6 +92,7 @@ export function migrateLegacyConfig(legacy: LegacyAgentflowConfig): AgentflowRun
       implementer: makeRole("implementer", legacy.models.implementer, renderImplementerPrompt(configForPrompts as never)),
       tester: makeRole("tester", legacy.models.tester, renderTesterPrompt(configForPrompts as never)),
       documenter: makeRole("documenter", legacy.models.documenter, renderDocumenterPrompt(configForPrompts as never)),
+      classifier: makeRole("classifier", cheapestModel[defaultProvider], renderClassifierPrompt()),
     },
   };
 }

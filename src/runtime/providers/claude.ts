@@ -1,12 +1,7 @@
-import { execFile } from "node:child_process";
-import { createWriteStream } from "node:fs";
-import { promisify } from "node:util";
-
 import { isExecutableInPath, writeJson, writeText } from "../../utils/fs.js";
+import { spawnCollect } from "../../utils/process.js";
 import { generateRunId, tracePaths } from "../artifacts.js";
 import type { ProviderAdapter, RunProviderInput, RunRoleResult } from "../provider-adapter.js";
-
-const execFileAsync = promisify(execFile);
 
 export const claudeAdapter: ProviderAdapter = {
   id: "claude-code",
@@ -44,21 +39,17 @@ export const claudeAdapter: ProviderAdapter = {
 
     const args = ["-p", fullPrompt, "--model", input.model];
 
-    let stdout = "";
-    let stderr = "";
+    if (input.sandbox === "workspace-write") {
+      args.push("--dangerously-skip-permissions");
+    } else {
+      args.push("--permission-mode", "plan");
+    }
 
-    try {
-      const result = await execFileAsync("claude", args, {
-        cwd: input.cwd,
-        maxBuffer: 10 * 1024 * 1024,
-      });
-      stdout = result.stdout;
-      stderr = result.stderr;
-    } catch (err: unknown) {
-      const execErr = err as { stdout?: string; stderr?: string; code?: number };
-      stdout = execErr.stdout ?? "";
-      stderr = execErr.stderr ?? "";
+    const { stdout, stderr, code } = await spawnCollect("claude", args, {
+      cwd: input.cwd,
+    });
 
+    if (code !== 0) {
       await writeText(paths.stdout, stdout + (stderr ? `\n--- stderr ---\n${stderr}` : ""));
       await writeJson(paths.result, { ok: false, code: "execution_failed", message: stderr || "non-zero exit" });
 

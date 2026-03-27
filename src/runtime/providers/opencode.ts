@@ -1,11 +1,7 @@
-import { execFile } from "node:child_process";
-import { promisify } from "node:util";
-
 import { isExecutableInPath, writeJson, writeText } from "../../utils/fs.js";
+import { spawnCollect } from "../../utils/process.js";
 import { generateRunId, tracePaths } from "../artifacts.js";
 import type { ProviderAdapter, RunProviderInput, RunRoleResult } from "../provider-adapter.js";
-
-const execFileAsync = promisify(execFile);
 
 export const opencodeAdapter: ProviderAdapter = {
   id: "opencode",
@@ -43,21 +39,11 @@ export const opencodeAdapter: ProviderAdapter = {
 
     const args = ["run", "--model", input.model, "--format", "json", fullPrompt];
 
-    let stdout = "";
-    let stderr = "";
+    const { stdout, stderr, code } = await spawnCollect("opencode", args, {
+      cwd: input.cwd,
+    });
 
-    try {
-      const result = await execFileAsync("opencode", args, {
-        cwd: input.cwd,
-        maxBuffer: 10 * 1024 * 1024,
-      });
-      stdout = result.stdout;
-      stderr = result.stderr;
-    } catch (err: unknown) {
-      const execErr = err as { stdout?: string; stderr?: string };
-      stdout = execErr.stdout ?? "";
-      stderr = execErr.stderr ?? "";
-
+    if (code !== 0) {
       await writeText(paths.stdout, stdout + (stderr ? `\n--- stderr ---\n${stderr}` : ""));
       await writeJson(paths.result, { ok: false, code: "execution_failed", message: stderr || "non-zero exit" });
 

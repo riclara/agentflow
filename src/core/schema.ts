@@ -37,7 +37,6 @@ export interface AgentflowWorkflow {
 export interface AgentflowProject {
   language: string;
   framework: string;
-  testRunner: string;
 }
 
 export interface AgentflowConfig {
@@ -75,7 +74,6 @@ export const DEFAULT_WORKFLOW: AgentflowWorkflow = {
 export const DEFAULT_PROJECT: AgentflowProject = {
   language: "TypeScript",
   framework: "Express",
-  testRunner: "npx vitest run",
 };
 
 const PATH_ALIASES: Record<string, string> = {
@@ -145,7 +143,7 @@ export function validateConfig(value: unknown): asserts value is AgentflowConfig
     }
   }
 
-  for (const key of ["language", "framework", "testRunner"] as const) {
+  for (const key of ["language", "framework"] as const) {
     if (typeof config.project?.[key] !== "string") {
       throw new Error(`Invalid .agentflow.json: project.${key} must be a string.`);
     }

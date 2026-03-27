@@ -9,7 +9,7 @@ export function resolveProvider(
   config: AgentflowRuntimeConfig,
   cliProvider?: ProviderId,
 ): ProviderId {
-  return cliProvider ?? config.roles[role].provider;
+  return cliProvider ?? config.roles[role]!.provider;
 }
 
 /**
@@ -23,9 +23,10 @@ export function resolveModel(
   cliModel?: string,
 ): string {
   if (cliModel) return cliModel;
-  const providerModel = config.roles[role].providerModels[provider];
+  const roleConfig = config.roles[role]!;
+  const providerModel = roleConfig.providerModels[provider];
   if (providerModel) return providerModel;
-  return config.roles[role].model;
+  return roleConfig.model;
 }
 
 /**
@@ -37,7 +38,7 @@ export function resolvePrompt(
   provider: ProviderId,
   config: AgentflowRuntimeConfig,
 ): string {
-  const roleConfig = config.roles[role];
+  const roleConfig = config.roles[role]!;
   const override = roleConfig.prompt.providerOverrides[provider];
   return override ?? roleConfig.prompt.base;
 }
