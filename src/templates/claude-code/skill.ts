@@ -130,7 +130,7 @@ Invoke @agent-tester with:
 "Read FEATURE_DIR/plan.md. Execute only ## Test Tasks.
 Create the test files listed in '## Test Files'.
 Write tests covering all acceptance criteria.
-Run tests with: ${config.project.testRunner}.
+Auto-detect and run tests from the project (package.json scripts, vitest.config.*, jest.config.*, pytest.ini, go.mod, Cargo.toml, Gemfile).
 If all pass: report success.
 If any fail: update FEATURE_DIR/review.md with:
 ## Status: NEEDS_CHANGES

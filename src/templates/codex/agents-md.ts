@@ -26,7 +26,7 @@ This project defines 4 custom agents in .codex/agents/:
 ## Project Context
 - Language: ${config.project.language}
 - Framework: ${config.project.framework}
-- Tests: ${config.project.testRunner}
+- Tests: auto-detect from project
 ${END_MARKER}
 `;
 }

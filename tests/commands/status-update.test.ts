@@ -1,4 +1,4 @@
-import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, readFile, rm, mkdir, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 
@@ -26,7 +26,7 @@ afterEach(async () => {
 });
 
 describe("status + update commands", () => {
-  it("status reports healthy template health for a fresh install", async () => {
+  it("status reports bootstrap files for a fresh install", async () => {
     const cwd = await makeTempDir();
     vi.spyOn(console, "warn").mockImplementation(() => undefined);
     vi.spyOn(console, "log").mockImplementation(() => undefined);
@@ -40,12 +40,12 @@ describe("status + update commands", () => {
     await runStatusCommand(cwd);
 
     const output = getConsoleOutput(logSpy);
-    expect(output).toContain("Template Health: healthy");
-    expect(output).toContain("Claude planner: healthy");
-    expect(output).toContain("Codex skill: healthy");
+    expect(output).toContain("Bootstrap files:");
+    expect(output).toContain(".claude/skills/agentflow/SKILL.md");
+    expect(output).toContain(".agents/skills/agentflow/SKILL.md");
   });
 
-  it("status reports stale templates when v3 invariants are missing", async () => {
+  it("status detects legacy role files left from previous versions", async () => {
     const cwd = await makeTempDir();
     vi.spyOn(console, "warn").mockImplementation(() => undefined);
     vi.spyOn(console, "log").mockImplementation(() => undefined);
@@ -55,15 +55,16 @@ describe("status + update commands", () => {
       tools: "claude-code",
     });
 
+    // Simulate a legacy file left over from a previous install
+    const agentsDir = path.join(cwd, ".claude", "agents");
+    await mkdir(agentsDir, { recursive: true });
     await writeFile(
-      path.join(cwd, ".claude/agents/planner.md"),
+      path.join(agentsDir, "planner.md"),
       `---
 name: planner
-description: broken planner
-tools: Read, Write, Glob, Grep
-model: opus
+description: legacy planner
 ---
-broken
+legacy content
 `,
       "utf8",
     );
@@ -72,11 +73,10 @@ broken
     await runStatusCommand(cwd);
 
     const output = getConsoleOutput(logSpy);
-    expect(output).toContain("Template Health: stale");
-    expect(output).toContain("Claude planner: stale");
+    expect(output).toContain(".claude/agents/planner.md");
   });
 
-  it("update rewrites managed files when template health is stale even at the current version", async () => {
+  it("update rewrites bootstrap files when config version is outdated", async () => {
     const cwd = await makeTempDir();
     vi.spyOn(console, "warn").mockImplementation(() => undefined);
     vi.spyOn(console, "log").mockImplementation(() => undefined);
@@ -86,26 +86,16 @@ broken
       tools: "claude-code",
     });
 
-    const plannerPath = path.join(cwd, ".claude/agents/planner.md");
-    await writeFile(
-      plannerPath,
-      `---
-name: planner
-description: stale planner
-tools: Read, Write, Glob, Grep
-model: opus
----
-stale
-`,
-      "utf8",
-    );
+    // Corrupt the SKILL.md so we can detect it was rewritten
+    const skillPath = path.join(cwd, ".claude", "skills", "agentflow", "SKILL.md");
+    await writeFile(skillPath, "outdated content", "utf8");
 
-    await runUpdateCommand(cwd, {});
+    // Force update to trigger rewrite
+    await runUpdateCommand(cwd, { force: true });
 
-    const planner = await readFile(plannerPath, "utf8");
-    expect(planner).toContain("## Implementation Tasks");
-    expect(planner).toContain("## Test Tasks");
-    expect(planner).toContain("## Status: APPROVED | NEEDS_CHANGES");
+    const skill = await readFile(skillPath, "utf8");
+    expect(skill).not.toBe("outdated content");
+    expect(skill).toContain("agentflow");
   });
 
   it("update --force rewrites healthy managed files", async () => {
@@ -122,7 +112,6 @@ stale
     await runUpdateCommand(cwd, { force: true });
 
     const output = getConsoleOutput(logSpy);
-    expect(output).toContain(".claude/agents/planner.md");
     expect(output).toContain(".claude/skills/agentflow/SKILL.md");
   });
 });

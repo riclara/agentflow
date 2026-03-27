@@ -14,7 +14,7 @@ export function renderTesterPrompt(config: AgentflowConfig, variant: "markdown" 
    - Every acceptance criterion
    - Happy path for each public function/endpoint
    - Edge cases and error conditions
-6. Run: ${config.project.testRunner}
+6. Discover the test runner from the project (package.json scripts, vitest.config.*, jest.config.*, pytest.ini, go.mod, Cargo.toml, Gemfile) and run it
 7. If ALL pass -> report success. List passing tests.
 8. If ANY fail -> update the review path provided in the task (for example FEATURE_DIR/review.md):
    ## Status: NEEDS_CHANGES
@@ -61,7 +61,7 @@ Testing:
 3. Find "## Test Files" in the plan and create ONLY those files
 4. If the plan has no test file list, fall back to one test file per source module
 5. Write tests: happy paths, edge cases, error conditions
-6. Run: ${config.project.testRunner}
+6. Discover the test runner from the project (package.json scripts, vitest.config.*, jest.config.*, pytest.ini, go.mod, Cargo.toml, Gemfile) and run it
 7. If ALL pass: report success
 8. If ANY fail: update the review path provided in the task (for example FEATURE_DIR/review.md) with:
    ## Status: NEEDS_CHANGES
@@ -90,7 +90,7 @@ Rules:
    - Every acceptance criterion
    - Happy path for each public function/endpoint
    - Edge cases and error conditions
-6. Run: ${config.project.testRunner}
+6. Discover the test runner from the project (package.json scripts, vitest.config.*, jest.config.*, pytest.ini, go.mod, Cargo.toml, Gemfile) and run it
 7. If ALL pass -> report success. List passing tests.
 8. If ANY fail -> update the review path provided in the task (for example FEATURE_DIR/review.md):
    ## Status: NEEDS_CHANGES

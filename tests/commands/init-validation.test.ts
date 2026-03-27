@@ -4,6 +4,8 @@ import path from "node:path";
 
 import { afterEach, describe, expect, it, vi } from "vitest";
 
+import { runInitCommand } from "../../src/commands/init.js";
+
 const tempDirs: string[] = [];
 
 async function makeTempDir(): Promise<string> {
@@ -14,42 +16,21 @@ async function makeTempDir(): Promise<string> {
 
 afterEach(async () => {
   vi.restoreAllMocks();
-  vi.resetModules();
-  vi.doUnmock("../../src/core/health.js");
   await Promise.all(tempDirs.splice(0).map((target) => rm(target, { recursive: true, force: true })));
 });
 
 describe("runInitCommand validation", () => {
-  it("fails if post-generation validation detects broken templates", async () => {
+  it("fails if --max-iterations is less than 1", async () => {
     const cwd = await makeTempDir();
     vi.spyOn(console, "log").mockImplementation(() => undefined);
     vi.spyOn(console, "warn").mockImplementation(() => undefined);
-
-    vi.doMock("../../src/core/health.js", () => ({
-      collectTemplateHealth: vi.fn(async () => ({
-        status: "stale",
-        checks: [
-          {
-            key: "claude-planner",
-            label: "Claude planner",
-            path: ".claude/agents/planner.md",
-            tool: "claude-code",
-            status: "stale",
-            reason: "missing Implementation Tasks section",
-            managed: true,
-            missingRequirements: ["Implementation Tasks section"],
-          },
-        ],
-      })),
-    }));
-
-    const { runInitCommand } = await import("../../src/commands/init.js");
 
     await expect(
       runInitCommand(cwd, {
         yes: true,
         tools: "claude-code",
+        maxIterations: "0",
       }),
-    ).rejects.toThrow("Generated templates failed post-generation validation");
+    ).rejects.toThrow("--max-iterations must be an integer >= 1.");
   });
 });

@@ -26,7 +26,7 @@ export function renderClaudeWorkflowSection(config: AgentflowConfig): string {
 ### Project
 - Language: ${config.project.language}
 - Framework: ${config.project.framework}
-- Tests: ${config.project.testRunner}
+- Tests: auto-detect from project
 ${END_MARKER}
 `;
 }

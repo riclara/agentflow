@@ -2,7 +2,9 @@
 
 import { Command } from "commander";
 
+import { runAgentCommand } from "./commands/agent.js";
 import { getConfigCommand, setConfigCommand, showConfigCommand } from "./commands/config.js";
+import { runPipelineCommand } from "./commands/run.js";
 import { runEjectCommand } from "./commands/eject.js";
 import { runInitCommand } from "./commands/init.js";
 import { runStatusCommand } from "./commands/status.js";
@@ -68,6 +70,32 @@ configCommand
   .argument("<value>", "New config value")
   .action(async (targetPath: string, value: string) => {
     await setConfigCommand(process.cwd(), targetPath, value);
+  });
+
+program
+  .command("run")
+  .description("Execute the full planning → implementation → review → test → document pipeline.")
+  .argument("<feature>", "Feature description (used to derive artifact slug).")
+  .option("--provider <id>", "Override provider for all roles: claude-code | codex | opencode")
+  .option("--model <name>", "Override model for all roles.")
+  .option("--json", "Output final result as JSON.")
+  .action(async (feature: string, options) => {
+    await runPipelineCommand(process.cwd(), feature, options);
+  });
+
+const agentCommand = program.command("agent").description("Run a single agent role.");
+
+agentCommand
+  .command("run")
+  .description("Execute a single role with an explicit task.")
+  .argument("<role>", "planner | implementer | tester | documenter")
+  .requiredOption("--task <text>", "Task description to pass to the agent.")
+  .option("--provider <id>", "Override provider: claude-code | codex | opencode")
+  .option("--model <name>", "Override model name.")
+  .option("--feature <slug>", "Feature slug for artifact routing.")
+  .option("--json", "Output result as JSON.")
+  .action(async (role: string, options) => {
+    await runAgentCommand(process.cwd(), role, options);
   });
 
 program

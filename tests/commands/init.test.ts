@@ -5,7 +5,7 @@ import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { runInitCommand } from "../../src/commands/init.js";
-import { AGENTFLOW_VERSION, readConfig } from "../../src/core/schema.js";
+import { readRuntimeConfig } from "../../src/runtime/config.js";
 
 const tempDirs: string[] = [];
 
@@ -31,23 +31,18 @@ describe("runInitCommand", () => {
       tools: "claude-code,codex",
     });
 
-    const config = await readConfig(cwd);
+    const config = await readRuntimeConfig(cwd);
     expect(config).not.toBeNull();
     expect(config?.tools).toEqual(["claude-code", "codex"]);
-    expect(config?.managedFiles).toMatchObject({
-      ".claude/skills/agentflow/SKILL.md": AGENTFLOW_VERSION,
-      ".codex/agents/planner.toml": AGENTFLOW_VERSION,
-      "CLAUDE.md": "partial",
-      "AGENTS.md": "partial",
-    });
+    expect(config?.runtime.mode).toBe("cli-runtime");
+    expect(config?.roles.planner).toBeDefined();
+    expect(config?.roles.implementer).toBeDefined();
 
     const claudeSkill = await readFile(path.join(cwd, ".claude/skills/agentflow/SKILL.md"), "utf8");
-    const codexPlanner = await readFile(path.join(cwd, ".codex/agents/planner.toml"), "utf8");
-    const agentsMd = await readFile(path.join(cwd, "AGENTS.md"), "utf8");
+    const codexSkill = await readFile(path.join(cwd, ".agents/skills/agentflow/SKILL.md"), "utf8");
 
-    expect(claudeSkill).toContain("# Build Feature Pipeline");
-    expect(codexPlanner).toContain('model = "gpt-5-codex"');
-    expect(agentsMd).toContain("Multi-Agent Development Workflow");
+    expect(claudeSkill).toContain("agentflow");
+    expect(codexSkill).toContain("agentflow");
   });
 
   it("supports dry-run mode without writing files", async () => {
@@ -61,6 +56,6 @@ describe("runInitCommand", () => {
       dryRun: true,
     });
 
-    expect(await readConfig(cwd)).toBeNull();
+    expect(await readRuntimeConfig(cwd)).toBeNull();
   });
 });
